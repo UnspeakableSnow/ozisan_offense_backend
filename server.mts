@@ -4,8 +4,8 @@ const server: http.Server = http.createServer();
 const socketOptions = {
   cors: {
     // フロントのある場所
-    // origin: "http://192.168.11.17:8080",
-    origin: "https://unspeakablesnow.github.io",
+    origin: "http://192.168.11.17:8080",
+    // origin: "https://unspeakablesnow.github.io",
     credentials: true
   },
 };
@@ -26,7 +26,7 @@ const Rs: RT[] = [];
 //所謂セッション PTs
 const PSs: PS[] = [];
 
-function makePT(id: string, side: number, ind: number) {
+function makePT(id: string, side: number, ind: number, select_weapon:weapon) {
   const start_positions: position[] = [
     { x: 2500, y: 0, z: 0,    y_rotation: 0, elevation_angle: 0 },
     { x: 1200, y: 0, z: 0,    y_rotation: 0, elevation_angle: 0 },
@@ -41,7 +41,7 @@ function makePT(id: string, side: number, ind: number) {
   const PTdata: PT = {
     id: id,
     side: side,
-    weapon_ids: { main: "desert_eagle" },
+    weapon_ids: select_weapon,
     health: 0,
     position: start_positions[ind % start_positions.length],
     velocity: {
@@ -133,7 +133,7 @@ io.on(
           if (slctdRind === -1 && arg.map === "origin" && (arg.mode === "deathmatch" || arg.mode === "team_deathmatch")) {
             const npcsT:PT[] = []
             for (let i = 0; i < 13; i++){
-              npcsT.push(makePT("npc_" + npcsT.length.toString(), npcsT.length, npcsT.length));
+              npcsT.push(makePT("npc_" + npcsT.length.toString(), npcsT.length, npcsT.length, {main:"desert_eagle"}));
             }
             Rs.push({
               Rid: arg.Rid,
@@ -155,7 +155,7 @@ io.on(
         io.to(socket.id).emit("login_false", "ログインしてください。");
       }
     });
-    socket.on("selectR", (Rid: string) => {
+    socket.on("selectR", (Rid: string, select_weapon: weapon) => {
       const PSind = PSs.findIndex((PS) => PS.id === id);
       if (PSind != -1) {
         if (PSs[PSind].R.charAt(0) === "&" || Rs.findIndex((R) => R.Rid === PSs[PSind].R) === -1) {
@@ -164,7 +164,7 @@ io.on(
             if (Rs[slctdRind].PTs.length < 20) {
               if (Rs[slctdRind].mode === "deathmatch") {
                 Rs[slctdRind].PTs.push(
-                  makePT(PSs[PSind].id, Rs[slctdRind].PTs.length, Rs[slctdRind].PTs.length)
+                  makePT(PSs[PSind].id, Rs[slctdRind].PTs.length, Rs[slctdRind].PTs.length, select_weapon)
                 );
               } else {
                 Rs[slctdRind].PTs.push(
@@ -174,7 +174,8 @@ io.on(
                       Rs[slctdRind].PTs.length / 2
                       ? 0
                       : 1,
-                    Rs[slctdRind].PTs.length
+                    Rs[slctdRind].PTs.length,
+                    select_weapon
                   )
                 );
               }

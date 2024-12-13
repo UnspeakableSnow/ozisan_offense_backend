@@ -5,6 +5,7 @@ type position = {
   y_rotation: number;
   elevation_angle: number;
 };
+type weapon = { main: "desert_eagle" | "fn_fal" | "g3" }
 type PS = {
   id: string;
   ip: string;
@@ -14,7 +15,7 @@ type PS = {
 type PT = {
   id: string;
   side: number;
-  weapon_ids: { main: "desert_eagle" | "fn_fal" | "g3" };
+  weapon_ids: weapon;
   health: number;
   position: position;
   velocity: position;
