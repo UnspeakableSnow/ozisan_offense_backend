@@ -3,7 +3,7 @@ import { Server, Socket } from "socket.io";
 const server: http.Server = http.createServer();
 const socketOptions = {
   cors: {
-    // フロントのある場所
+    // process.argv[2] - フロントのある場所
     origin: process.argv[2],
     credentials: true
   },
