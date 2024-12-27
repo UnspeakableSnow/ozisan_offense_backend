@@ -10,7 +10,9 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js"
+    "watch": "tsc -w",
+    "start": "node server.mjs https://unspeakablesnow.github.io",
+    "start_dev": "node server.mjs http://192.168.11.17:8080"
   },
   "compilerOptions": {
     "outDir": "./dist"
